@@ -8,6 +8,7 @@ package pkg74ever;
  *
  * @author merijn
  */
+import lejos.nxt.Motor;
 public class Main {
 
     /**
