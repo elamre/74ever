@@ -18,6 +18,6 @@ public class Main {
         System.out.println("teesht");
         SensorManager sensor = new SensorManager();
         System.out.println("Hello World");
-        
+        //http://sourceforge.net/projects/lejos/files/lejos-NXJ/
     }
 }
