@@ -17,7 +17,7 @@ public class Main {
         // TODO code application logic here
         System.out.println("teesht");
         SensorManager sensor = new SensorManager();
-        
+        System.out.println("Hello World");
         
     }
 }
