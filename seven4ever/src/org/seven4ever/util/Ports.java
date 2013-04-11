@@ -1,6 +1,7 @@
 package org.seven4ever.util;
 
-import lejos.nxt.MotorPort;
+import lejos.nxt.Motor;
+import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 
 /**
@@ -20,9 +21,9 @@ public class Ports {
     /** The light sensor to detect restricted zones */
     public static final SensorPort LIGHTPORT = SensorPort.S4;
     /** The vision motor port to rotate the vision sensor */
-    public static final MotorPort VISIONMOTORPORT = MotorPort.A;
+    public static final NXTRegulatedMotor VISIONMOTORPORT = Motor.A;
     /** The joint motor port to rotate the robot */
-    public static final MotorPort JOINTMOTORPORT = MotorPort.A;
+    public static final NXTRegulatedMotor JOINTMOTORPORT = Motor.B;
     /** The motor port to move the robot */
-    public static final MotorPort MOTORPORT = MotorPort.A;
+    public static final NXTRegulatedMotor MOTORPORT = Motor.C;
 }
