@@ -4,7 +4,6 @@
  */
 package org.seven4ever.main;
 
-import org.seven4ever.sensor.Action;
 import org.seven4ever.sensor.SensorManager;
 
 
