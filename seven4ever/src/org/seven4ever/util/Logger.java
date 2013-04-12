@@ -2,10 +2,11 @@ package org.seven4ever.util;
 
 import lejos.nxt.Sound;
 
+//import java.lang.*;
+
 /**
  * This singleton class provides methods to log messages and exceptions of
- * different log levels. The log level is configured in this class.
- * A message is only logged if the log level is the
+ * different log levels. The log level is configured in th class. A message is only logged if the log level is the
  * same or higher than the configured log level.
  *
  * @author Elmar
@@ -122,13 +123,7 @@ public class Logger {
      * @return the exception and stack trace as string
      */
     public String getStackTraceString(Exception exception) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(exception.getMessage());
-        for (StackTraceElement sTE : exception.getStackTrace()) {
-            sb.append("\n");
-            sb.append(sTE.toString());
-        }
-        return sb.toString();
+        return exception.toString();
     }
 
     /**
@@ -158,7 +153,8 @@ public class Logger {
      *
      * @param exception the exception
      */
-    public void error(Exception exception) {
+    public void error(Exception exception, String usedClass) {
+        writeMessage(usedClass, ERROR);
         writeException(exception, ERROR);
     }
 
@@ -176,7 +172,8 @@ public class Logger {
      *
      * @param exception the exception
      */
-    public void warn(Exception exception) {
+    public void warn(Exception exception, String usedClass) {
+        writeMessage(usedClass, WARN);
         writeException(exception, WARN);
     }
 
@@ -194,7 +191,8 @@ public class Logger {
      *
      * @param exception the exception
      */
-    public void debug(Exception exception) {
+    public void debug(Exception exception, String usedClass) {
+        writeMessage(usedClass, DEBUG);
         writeException(exception, DEBUG);
     }
 
@@ -212,7 +210,8 @@ public class Logger {
      *
      * @param exception the exception
      */
-    public void system(Exception exception) {
+    public void system(Exception exception, String usedClass) {
+        writeMessage(usedClass, SYSTEM);
         writeException(exception, SYSTEM);
     }
 

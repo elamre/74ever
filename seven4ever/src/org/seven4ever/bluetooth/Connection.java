@@ -1,8 +1,5 @@
 package org.seven4ever.bluetooth;
 
-import lejos.nxt.comm.Bluetooth;
-import lejos.nxt.comm.NXTConnection;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Elmar
@@ -11,5 +8,4 @@ import lejos.nxt.comm.NXTConnection;
  * To change this template use File | Settings | File Templates.
  */
 public class Connection {
-    NXTConnection connection = Bluetooth.waitForConnection();
 }
