@@ -1,5 +1,7 @@
 package org.seven4ever.driver;
 
+import org.seven4ever.util.Logger;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Elmar
@@ -8,16 +10,29 @@ package org.seven4ever.driver;
  * To change this template use File | Settings | File Templates.
  */
 public class DriverTest {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         Driver driver;
         Thread thread;
         driver = new Driver();
         thread = new Thread(driver);
         thread.start();
-        driver.setSpeed(1700);
-        Thread.sleep(2000);
+        Logger.getInstance().debug("Forward");
+        driver.setSpeed(2000);
+        Thread.sleep(4000);
+        Logger.getInstance().debug("Turning");
         driver.setSpeed(100);
-        driver.setRotation(10);
-        Thread.sleep(1000);
+        driver.turn(100);
+        Thread.sleep(5000);
+        Logger.getInstance().debug("Forward");
+        driver.setSpeed(2000);
+        Thread.sleep(2500);
+        Logger.getInstance().debug("Stopping");
+        driver.stop();
+        Thread.sleep(2500);
+        Logger.getInstance().debug("Forward");
+        driver.setSpeed(2000);
+        Thread.sleep(2500);
+        Logger.getInstance().debug("EMERGENCY STOP");
+        driver.emergencyStop();
     }
 }

@@ -82,6 +82,7 @@ public class Driver implements Runnable {
                     //Wait for the next task
                     break;
                 case IDLE:
+                    Ports.JOINTMOTORPORT.rotate(Ports.JOINTMOTORPORT.getPosition() - neutral); //Make sure it's neutral at all times
                     break;
                 case MOVEFORWARD:
                     break;
@@ -95,6 +96,7 @@ public class Driver implements Runnable {
                             state = DriverState.STOPPED;
                         }
                     }
+                    Ports.JOINTMOTORPORT.rotate(Ports.JOINTMOTORPORT.getPosition() - neutral);
                     break;
                 case TURNINGLEFT:
                     if (Ports.JOINTMOTORPORT.getPosition() <= targetRotation)
@@ -112,6 +114,11 @@ public class Driver implements Runnable {
                     Ports.MOTORPORT.stop();
                     Ports.JOINTMOTORPORT.stop();
                     break;
+            }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
