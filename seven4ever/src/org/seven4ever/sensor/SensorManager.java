@@ -11,24 +11,15 @@ import org.seven4ever.util.Ports;
  * To change this template use File | Settings | File Templates.
  */
 public class SensorManager implements Runnable {
-    private TouchWrapper touchFront;
-    private TouchWrapper touchBack;
+    public TouchWrapper touchFront;
+    public TouchWrapper touchBack;
+    public VisionWrapper vision;
     private boolean running = false;
 
     public SensorManager() {
         touchFront = new TouchWrapper(Ports.TOUCHPORTFRONT);
-        touchFront.setAction(new Action() {
-            public void action() {
-                System.out.println("Front collision!!!");
-            }
-        });
         touchBack = new TouchWrapper(Ports.TOUCHPORTBACK);
-        touchBack.setAction(new Action() {
-            @Override
-            public void action() {
-                System.out.println("Back collision!!!");
-            }
-        });
+        vision = new VisionWrapper(Ports.VISIONPORT);
         running = true;
     }
 
@@ -49,6 +40,7 @@ public class SensorManager implements Runnable {
         while (running) {
             touchBack.update();
             touchFront.update();
+            vision.update();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -71,5 +63,23 @@ public class SensorManager implements Runnable {
      */
     private void exception(Exception exception) {
         running = false;
+        Logger.getInstance().error("Something went terribly wrong in the SensorManager.java class");
+        Logger.getInstance().error(exception);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TouchWrapper getTouchFront() {
+        return touchFront;
+    }
+
+    public TouchWrapper getTouchBack() {
+        return touchBack;
+    }
+
+    public VisionWrapper getVision() {
+        return vision;
     }
 }

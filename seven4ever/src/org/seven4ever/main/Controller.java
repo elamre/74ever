@@ -1,5 +1,7 @@
 package org.seven4ever.main;
 
+import org.seven4ever.driver.Driver;
+import org.seven4ever.sensor.Action;
 import org.seven4ever.sensor.SensorManager;
 import org.seven4ever.util.Logger;
 
@@ -13,6 +15,8 @@ import org.seven4ever.util.Logger;
 public class Controller implements Runnable {
     SensorManager sensorManager;
     Thread sensorManagerThread;
+    Driver driver;
+    Thread driverThread;
 
     /** Default constructor. Will call the initialize function */
     public Controller() {
@@ -21,13 +25,39 @@ public class Controller implements Runnable {
 
     /** Initializes and creates all the objects */
     private void initialize() {
+        driver = new Driver();
         sensorManager = new SensorManager();
+        sensorManager.getTouchBack().setAction(new Action() {
+            @Override
+            public void action() {
+                driver.emergencyStop();
+                Logger.getInstance().debug("Touch sensor back was touched");
+            }
+        });
+        sensorManager.getTouchFront().setAction(new Action() {
+            @Override
+            public void action() {
+                driver.emergencyStop();
+                Logger.getInstance().debug("Touch sensor front was touched");
+            }
+        });
+        sensorManager.getVision().setAction(new Action() {
+            @Override
+            public void action() {
+                driver.stop();
+                Logger.getInstance().debug("Vision sensor detects something");
+            }
+        });
     }
 
     /** Will create and start all the required threads. */
     public void start() {
+        driverThread = new Thread(driver);
+        driverThread.start();
+
         sensorManagerThread = new Thread(sensorManager);
         sensorManagerThread.start();
+        sensorManager.start();
     }
 
     /**
@@ -45,6 +75,7 @@ public class Controller implements Runnable {
     public void run() {
         while (true) {
             try {
+
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Logger.getInstance().error("Something went wrong while sleeping, Controller class");

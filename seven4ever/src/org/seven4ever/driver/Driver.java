@@ -4,82 +4,115 @@
  */
 package org.seven4ever.driver;
 
-import lejos.nxt.*;
 import org.seven4ever.util.Ports;
 
-/**
- *
- * @author merijn
- */
+/** @author merijn */
 public class Driver implements Runnable {
-
+    private DriverState state = DriverState.IDLE;
+    /** Left = up, right = down. True-False */
+    private boolean rotateUp = false;
+    private int targetRotation = 0;
     int neutral = 10; // set the neutral value of the motor
-    int currentSpeed;
-    int turnNeutral;
 
 
     public Driver() {
+        neutral = Ports.JOINTMOTORPORT.getPosition();
     }
+
     /**
      * Set the speed of the motor
-     * @param speed 
+     *
+     * @param speed
      */
     public void setSpeed(int speed) {
         Ports.MOTORPORT.setSpeed(speed);
     }
+
     /**
      * Set the rotation of the turning motor
-     * @param degrees 
+     *
+     * @param degrees
      */
     public void setRotation(int degrees) {
         Ports.JOINTMOTORPORT.rotate(degrees);
     }
-    /**
-     * Returns the current position of JOINTMOTORPORT
-     */
-    public void getRotation() {
-        Ports.JOINTMOTORPORT.getPosition();
+
+    /** @param degrees  */
+    public void turn(int degrees) {
+        targetRotation += degrees;
+        state = (degrees > 0) ? DriverState.TURNINGLEFT : DriverState.TURNINGRIGHT;
     }
-    /**
-     * Returns the current speed of MOTORPORT
-     */
-    public void getSpeed() {
-        Ports.MOTORPORT.getSpeed();
+
+    /** @return  */
+    public int getRotation() {
+        return Ports.JOINTMOTORPORT.getPosition();
     }
-    /**
-     * The slow stop
-     */
+
+    /** @return  */
+    public int getSpeed() {
+        return Ports.MOTORPORT.getSpeed();
+    }
+
+    /** The slow stop */
     public void stop() {
-        currentSpeed = Ports.MOTORPORT.getSpeed();
-        turnNeutral();
-        for(int i = currentSpeed;i > 0;i--){
-            setSpeed(i);
-        }
+        state = DriverState.STOPPING;
     }
-    /**
-     * Emergency stop, stops the car immediately
-     */
+
+    /** Emergency stop, stops the car immediately */
     public void emergencyStop() {
-        Ports.MOTORPORT.stop();
-        Ports.JOINTMOTORPORT.stop();
+        state = DriverState.EMERGENCYSTOP;
     }
-    /**
-     * Gets the current state of the car
-     */
-    public void getState() {
+
+    /** @return  */
+    public DriverState getState() {
+        return state;
     }
-    /**
-     * Sets the JOINTMOTORPORT to neutral/straight
-     */
+
+    /** Sets the JOINTMOTORPORT to neutral/straight */
     public void turnNeutral() {
-        turnNeutral = Ports.JOINTMOTORPORT.getPosition();
-        if (turnNeutral != neutral) {
-            Ports.JOINTMOTORPORT.rotate(neutral);
-        }
+        this.setRotation(-1 * Ports.JOINTMOTORPORT.getPosition());
     }
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while (true) {
+            switch (state) {
+                case STOPPED:
+                    //Wait for the next task
+                    break;
+                case IDLE:
+                    break;
+                case MOVEFORWARD:
+                    break;
+                case MOVEBACKWARD:
+                    break;
+                case STOPPING:
+                    if (getSpeed() > 0) {
+                        setSpeed(getSpeed() - 5);
+                        if (getSpeed() < 0 || getSpeed() == 0) {
+                            setSpeed(0);
+                            state = DriverState.STOPPED;
+                        }
+                    }
+                    break;
+                case TURNINGLEFT:
+                    if (Ports.JOINTMOTORPORT.getPosition() <= targetRotation)
+                        Ports.JOINTMOTORPORT.rotate(-1);
+                    else
+                        state = DriverState.IDLE;
+                    break;
+                case TURNINGRIGHT:
+                    if (Ports.JOINTMOTORPORT.getPosition() >= targetRotation)
+                        Ports.JOINTMOTORPORT.rotate(1);
+                    else
+                        state = DriverState.IDLE;
+                    break;
+                case EMERGENCYSTOP:
+                    Ports.MOTORPORT.stop();
+                    Ports.JOINTMOTORPORT.stop();
+                    break;
+            }
+        }
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
