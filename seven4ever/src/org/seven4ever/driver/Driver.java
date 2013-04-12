@@ -26,6 +26,7 @@ public class Driver implements Runnable {
      */
     public void setSpeed(int speed) {
         Ports.MOTORPORT.setSpeed(speed);
+        Ports.MOTORPORT.forward();
     }
 
     /**

@@ -75,7 +75,16 @@ public class Controller implements Runnable {
     public void run() {
         while (true) {
             try {
-
+                driver.setSpeed(1700);
+                Thread.sleep(2000);
+                driver.setSpeed(700);
+                driver.setRotation(40);
+                Thread.sleep(2000);
+                driver.emergencyStop();
+                Thread.sleep(1000);
+                driver.setSpeed(1700);
+                Thread.sleep(2000);
+                driver.stop();
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Logger.getInstance().error("Something went wrong while sleeping, Controller class");

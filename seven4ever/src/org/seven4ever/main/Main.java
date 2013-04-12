@@ -4,6 +4,8 @@
  */
 package org.seven4ever.main;
 
+import org.seven4ever.util.Logger;
+
 public class Main {
 
     /** @param args the command line arguments */
@@ -14,5 +16,6 @@ public class Main {
         controller.start();
         controllerThread = new Thread(controller);
         controllerThread.start();
+        Logger.getInstance().system("Everything launched and ready for work!");
     }
 }
