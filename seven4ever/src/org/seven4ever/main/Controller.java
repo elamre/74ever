@@ -4,10 +4,11 @@ import org.seven4ever.driver.Driver;
 import org.seven4ever.sensor.Action;
 import org.seven4ever.sensor.SensorManager;
 import org.seven4ever.util.Logger;
+import org.seven4ever.util.Ports;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Elmar
+ * User: Elmar + Merijn
  * Date: 4/11/13
  * Time: 2:44 PM
  * To change this template use File | Settings | File Templates.
@@ -17,6 +18,7 @@ public class Controller implements Runnable {
     Thread sensorManagerThread;
     Driver driver;
     Thread driverThread;
+    private ControllerState state = ControllerState.IDLESTATE;
 
     /** Default constructor. Will call the initialize function */
     public Controller() {
@@ -74,24 +76,54 @@ public class Controller implements Runnable {
     @Override
     public void run() {
         while (true) {
-            try {
-                driver.setSpeed(1700);
-                Thread.sleep(2000);
-                driver.setSpeed(700);
-                driver.setRotation(40);
-                Thread.sleep(2000);
-                driver.emergencyStop();
-                Thread.sleep(1000);
-                driver.setSpeed(1700);
-                Thread.sleep(2000);
-                driver.stop();
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Logger.getInstance().error("Something went wrong while sleeping, Controller class");
-                Logger.getInstance().error(e);
-                System.exit(0);
+            switch(state){
+                case IDLESTATE:
+                    driver.stop();
+                    Logger.getInstance().system("In IdleState");
+                    break;
+                case MOVINGSTATE:
+                    driver.moveForward();
+                    Logger.getInstance().system("In MovingState");
+                    break;
+                case SETTLINGSTATE:
+                    //driver.settling();
+                    Logger.getInstance().system("In SettlingState");
+                    break;
+                case CHECKINGSENSORSTATE:
+                    //driver.checkingsensors();
+                    Logger.getInstance().system("In idlestate");
+                    break;
+                case TURNINGSTATE:
+                    //driver.turning();
+                    Logger.getInstance().system("In idlestate");
+                    break;
+                case SAFEMODE:
+                    driver.emergencyStop();
+                    Logger.getInstance().error("In safemode");
+                    if(lejos.nxt.Button.ENTER.isDown()){
+                        state = ControllerState.CHECKINGSENSORSTATE;
+                    }              
+                    break;
+                    
             }
-            Logger.getInstance().debug("Doing something");
+//            try {
+//                driver.setSpeed(1700);
+//                Thread.sleep(2000);
+//                driver.setSpeed(700);
+//                driver.setRotation(40);
+//                Thread.sleep(2000);
+//                driver.emergencyStop();
+//                Thread.sleep(1000);
+//                driver.setSpeed(1700);
+//                Thread.sleep(2000);
+//                driver.stop();
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                Logger.getInstance().error("Something went wrong while sleeping, Controller class");
+//                Logger.getInstance().error(e);
+//                System.exit(0);
+//            }
+//            Logger.getInstance().debug("Doing something");
         }
     }
 }
