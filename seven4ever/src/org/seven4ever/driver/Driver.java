@@ -11,8 +11,8 @@ import org.seven4ever.util.Ports;
 public class Driver implements Runnable {
     private DriverState state = DriverState.IDLE;
     /** Left = up, right = down. True-False */
-    private boolean rotateUp = false;
     private int targetRotation = 0;
+    private int motorTimer = 100;
     int neutral = 10; // set the neutral value of the motor
 
 
@@ -82,23 +82,29 @@ public class Driver implements Runnable {
                         Ports.MOTORPORT.setSpeed(speed - 5);
                     }
                     if (speed <= 0) {
+                    	speed = 0;
+                    	Ports.MOTORPORT.setSpeed(0);
                         state = DriverState.IDLE;
                     }
                                                 // Slow down and go to idle, Make sure robot is in neutral position though
                     break;
                 case MOVING:
-
+                	motorTimer-=5;
                                                 // Move as long as the timer > 0 then stop
                     break;
                 case EMERGENCYSTOP:
+                	
                                                 // Stop right away and stay in this state
                     break;
                 case TURNING:
                                                 // Turn, then go to STOPPING state
                     break;
             }
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+            try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
     }
 }

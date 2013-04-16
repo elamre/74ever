@@ -27,20 +27,25 @@ public class Controller implements Runnable {
     private void initialize() {
         driver = new Driver();
         sensorManager = new SensorManager();
+        
         sensorManager.getTouchBack().setAction(new Action() {
             @Override
             public void action() {
                 driver.emergencyStop();
-                Logger.getInstance().debug("Touch sensor back was touched");
+               // Logger.getInstance().debug("Touch sensor back was touched");
             }
         });
+        sensorManager.getTouchBack().setThreshold(0);
+        
         sensorManager.getTouchFront().setAction(new Action() {
             @Override
             public void action() {
                 driver.emergencyStop();
-                Logger.getInstance().debug("Touch sensor front was touched");
+               // Logger.getInstance().debug("Touch sensor front was touched");
             }
         });
+        sensorManager.getTouchFront().setThreshold(0);
+        
         sensorManager.getVision().setAction(new Action() {
             @Override
             public void action() {
@@ -48,6 +53,7 @@ public class Controller implements Runnable {
                 Logger.getInstance().debug("Vision sensor detects something");
             }
         });
+        sensorManager.getVision().setThreshold(90);
     }
 
     /** Will create and start all the required threads. */
