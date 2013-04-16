@@ -58,7 +58,6 @@ public class Logger {
 
     public static int loglevel = Logger.ALL;
 
-    public static String newline = System.getProperty("line.separator");
 
     /** Instantiates a new logger. */
     public Logger() {
@@ -73,7 +72,7 @@ public class Logger {
      */
     private synchronized void writeMessage(String message, int logLevel) {
         if (logLevel <= loglevel) {
-            System.out.println(getLogPrefix(logLevel) + message + newline);
+            System.out.println(getLogPrefix(logLevel) + message);
             Sound.beep();
         }
     }
@@ -86,7 +85,7 @@ public class Logger {
      */
     private synchronized void writeException(Exception exception, int logLevel) {
         if (logLevel <= loglevel) {
-            System.out.println(getLogPrefix(logLevel) + getStackTraceString(exception) + newline);
+            System.out.println(getLogPrefix(logLevel) + getStackTraceString(exception));
             Sound.twoBeeps();
         }
     }
@@ -102,16 +101,16 @@ public class Logger {
         StringBuilder sb = new StringBuilder();
         switch (logLevel) {
             case ERROR:
-                sb.append(" - ERROR: ");
+                sb.append("-E: ");
                 break;
             case WARN:
-                sb.append(" - WARN: ");
+                sb.append("-W: ");
                 break;
             case DEBUG:
-                sb.append(" - DEBUG: ");
+                sb.append("-D: ");
                 break;
             case SYSTEM:
-                sb.append(" - SYSTEM: ");
+                sb.append("-S: ");
         }
         return sb.toString();
     }

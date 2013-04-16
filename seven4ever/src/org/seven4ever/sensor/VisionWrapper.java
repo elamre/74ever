@@ -13,7 +13,6 @@ import lejos.nxt.UltrasonicSensor;
 public class VisionWrapper extends UltrasonicSensor implements SensorWrapper {
     int threshold = 0;
     Action action;
-    UltrasonicSensor sensor;
 
     public VisionWrapper(I2CPort port) {
         super(port);
@@ -31,7 +30,7 @@ public class VisionWrapper extends UltrasonicSensor implements SensorWrapper {
 
     @Override
     public void update() {
-        if (sensor.getDistance() < threshold) {
+        if (getDistance() < threshold) {
             if (action != null) {
                 action.action();
             }

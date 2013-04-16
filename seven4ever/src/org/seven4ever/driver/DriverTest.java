@@ -11,16 +11,6 @@ public class DriverTest {
         driver = new Driver();
         thread = new Thread(driver);
         thread.start();
-        driver.setSpeed(150);
-        Thread.sleep(1000);
-        driver.turn(45);
-        Thread.sleep(1000);
-        driver.setSpeed(300);
-        Thread.sleep(1000);
-        driver.turn(-45);
-        Thread.sleep(1000);
-        driver.setSpeed(150);
-        Thread.sleep(150);
-        driver.stop();
+
     }
 }

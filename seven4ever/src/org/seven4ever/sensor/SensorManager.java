@@ -18,8 +18,11 @@ public class SensorManager implements Runnable {
 
     public SensorManager() {
         touchFront = new TouchWrapper(Ports.TOUCHPORTFRONT);
+        touchFront.setThreshold(1);
         touchBack = new TouchWrapper(Ports.TOUCHPORTBACK);
+        touchBack.setThreshold(1);
         vision = new VisionWrapper(Ports.VISIONPORT);
+        vision.setThreshold(50);
         running = true;
     }
 
@@ -36,7 +39,7 @@ public class SensorManager implements Runnable {
      */
     @Override
     public void run() {
-        while (!running) ;
+        running = true;
         while (running) {
             touchBack.update();
             touchFront.update();
