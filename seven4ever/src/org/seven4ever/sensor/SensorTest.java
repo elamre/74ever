@@ -1,5 +1,7 @@
 package org.seven4ever.sensor;
 
+import org.seven4ever.util.Logger;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Elmar
@@ -13,11 +15,10 @@ public class SensorTest {
         Thread thread = new Thread(sensorManager);
         thread.start();
         sensorManager.start();
-        sensorManager.getTouchBack().setAction(new Action() {
-            @Override
-            public void action() {
-                System.out.println("AU!");
+        while (true) {
+            if (sensorManager.getTouchBack().isPressed()) {
+                Logger.getInstance().debug("Jaij");
             }
-        });
+        }
     }
 }

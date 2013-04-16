@@ -6,6 +6,5 @@ package org.seven4ever.driver;
 
 /** @author merijn */
 public enum DriverState {
-
-    STOPPED, STOPPING, IDLE, TURNINGLEFT, TURNINGRIGHT, MOVEFORWARD, MOVEBACKWARD, EMERGENCYSTOP;
+    IDLE, STOPPING, MOVING, EMERGENCYSTOP, TURNING;
 }

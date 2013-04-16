@@ -4,6 +4,7 @@
  */
 package org.seven4ever.driver;
 
+import org.seven4ever.util.Logger;
 import org.seven4ever.util.Ports;
 
 /** @author merijn */
@@ -40,18 +41,12 @@ public class Driver implements Runnable {
 
     /** @param degrees  */
     public void turn(int degrees) {
+        Logger.getInstance().debug("CD: " + Ports.JOINTMOTORPORT.getPosition());
+        Logger.getInstance().debug("D: " + degrees);
         targetRotation += degrees;
-        state = (degrees > 0) ? DriverState.TURNINGLEFT : DriverState.TURNINGRIGHT;
-    }
+        Logger.getInstance().debug("TD: " + targetRotation);
 
-    /** @return  */
-    public int getRotation() {
-        return Ports.JOINTMOTORPORT.getPosition();
-    }
-
-    /** @return  */
-    public int getSpeed() {
-        return Ports.MOTORPORT.getSpeed();
+        //state = (degrees > 0) ? DriverState.TURNINGRIGHT : DriverState.TURNINGLEFT;
     }
 
     /** The slow stop */
@@ -64,63 +59,46 @@ public class Driver implements Runnable {
         state = DriverState.EMERGENCYSTOP;
     }
 
+    public void moveForward(){}
+
     /** @return  */
     public DriverState getState() {
         return state;
-    }
-
-    /** Sets the JOINTMOTORPORT to neutral/straight */
-    public void turnNeutral() {
-        this.setRotation(-1 * Ports.JOINTMOTORPORT.getPosition());
     }
 
     @Override
     public void run() {
         while (true) {
             switch (state) {
-                case STOPPED:
-                    //Wait for the next task
-                    break;
                 case IDLE:
-                    Ports.JOINTMOTORPORT.rotate(Ports.JOINTMOTORPORT.getPosition() - neutral); //Make sure it's neutral at all times
-                    break;
-                case MOVEFORWARD:
-                    break;
-                case MOVEBACKWARD:
+                    if (Ports.MOTORPORT.isMoving()) {
+                        Ports.MOTORPORT.stop();
+                    }
+                                                // Do nothing
                     break;
                 case STOPPING:
-                    if (getSpeed() > 0) {
-                        setSpeed(getSpeed() - 5);
-                        if (getSpeed() < 0 || getSpeed() == 0) {
-                            setSpeed(0);
-                            state = DriverState.STOPPED;
-                        }
+                    int speed = 0;
+                    if ((speed = Ports.MOTORPORT.getSpeed()) > 0) {
+                        Ports.MOTORPORT.setSpeed(speed - 5);
                     }
-                    Ports.JOINTMOTORPORT.rotate(Ports.JOINTMOTORPORT.getPosition() - neutral);
-                    break;
-                case TURNINGLEFT:
-                    if (Ports.JOINTMOTORPORT.getPosition() <= targetRotation)
-                        Ports.JOINTMOTORPORT.rotate(-1);
-                    else
+                    if (speed <= 0) {
                         state = DriverState.IDLE;
+                    }
+                                                // Slow down and go to idle, Make sure robot is in neutral position though
                     break;
-                case TURNINGRIGHT:
-                    if (Ports.JOINTMOTORPORT.getPosition() >= targetRotation)
-                        Ports.JOINTMOTORPORT.rotate(1);
-                    else
-                        state = DriverState.IDLE;
+                case MOVING:
+
+                                                // Move as long as the timer > 0 then stop
                     break;
                 case EMERGENCYSTOP:
-                    Ports.MOTORPORT.stop();
-                    Ports.JOINTMOTORPORT.stop();
+                                                // Stop right away and stay in this state
+                    break;
+                case TURNING:
+                                                // Turn, then go to STOPPING state
                     break;
             }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-            }
         }
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
