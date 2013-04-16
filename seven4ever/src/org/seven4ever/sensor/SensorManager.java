@@ -49,7 +49,6 @@ public class SensorManager implements Runnable {
             } catch (InterruptedException e) {
                 exception(e);
             }
-            Logger.getInstance().debug("Updated Sensors");
         }
         running = false;
     }

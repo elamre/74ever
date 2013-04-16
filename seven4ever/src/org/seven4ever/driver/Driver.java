@@ -25,9 +25,8 @@ public class Driver implements Runnable {
      *
      * @param speed
      */
-    public void setSpeed(int speed) {
-        Ports.MOTORPORT.setSpeed(speed);
-        Ports.MOTORPORT.forward();
+    public void setSpeed(Speed speed) {
+    	Ports.MOTORPORT.setSpeed(speed.getSpeed());        
     }
 
     /**
@@ -37,16 +36,6 @@ public class Driver implements Runnable {
      */
     public void setRotation(int degrees) {
         Ports.JOINTMOTORPORT.rotate(degrees);
-    }
-
-    /** @param degrees  */
-    public void turn(int degrees) {
-        Logger.getInstance().debug("CD: " + Ports.JOINTMOTORPORT.getPosition());
-        Logger.getInstance().debug("D: " + degrees);
-        targetRotation += degrees;
-        Logger.getInstance().debug("TD: " + targetRotation);
-
-        //state = (degrees > 0) ? DriverState.TURNINGRIGHT : DriverState.TURNINGLEFT;
     }
 
     /** The slow stop */
@@ -59,7 +48,19 @@ public class Driver implements Runnable {
         state = DriverState.EMERGENCYSTOP;
     }
 
-    public void moveForward(){}
+    public void moveForward(Speed speed){
+    	setSpeed(speed);
+    	state = DriverState.MOVING;
+    	Ports.MOTORPORT.forward();
+    	motorTimer = 100;
+    }
+    
+    public void moveBackward(Speed speed){
+    	setSpeed(speed);
+    	state = DriverState.MOVING;
+    	Ports.MOTORPORT.backward();
+    	motorTimer = 100;
+    }
 
     /** @return  */
     public DriverState getState() {
@@ -90,10 +91,14 @@ public class Driver implements Runnable {
                     break;
                 case MOVING:
                 	motorTimer-=5;
+                	if(motorTimer<=0){
+                		state = DriverState.STOPPING;
+                	}
                                                 // Move as long as the timer > 0 then stop
                     break;
                 case EMERGENCYSTOP:
-                	
+                	Ports.MOTORPORT.stop();
+                	Ports.MOTORPORT.setSpeed(0);
                                                 // Stop right away and stay in this state
                     break;
                 case TURNING:
